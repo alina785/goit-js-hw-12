@@ -39,6 +39,7 @@ async function fetchImages() {
     try {
         const data = await searchGalleryQuery(currentQuery, currentPage);
         loader.classList.add('hidden');
+
         if (data.total === 0 || currentQuery === "") {
             iziToast.error({
                 position: 'topRight',
@@ -46,7 +47,9 @@ async function fetchImages() {
             });
             return;
         }
+
         createImages(data);
+
         if (data.hits.length === 0 || currentPage * 15 >= data.totalHits) {
             loadMoreBtn.classList.add('hidden');
             iziToast.info({
@@ -56,11 +59,15 @@ async function fetchImages() {
         } else {
             loadMoreBtn.classList.remove('hidden');
         }
+
         smoothScroll();
         showScrollToTopBtn();
     } catch (error) {
-        console.error(error);
         loader.classList.add('hidden');
+        iziToast.error({
+            position: 'topRight',
+            message: 'An error occurred while fetching images. Please try again later.',
+        });
     }
 }
 
@@ -87,4 +94,4 @@ function scrollToTop() {
     });
 }
 
-window.addEventListener('scroll', scrollToTopBtn);
+window.addEventListener('scroll', showScrollToTopBtn);
